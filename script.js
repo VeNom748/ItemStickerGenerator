@@ -28,7 +28,7 @@ const printContent = document.getElementById("print-content");
 
 // Event listeners
 excelFileInput.addEventListener("change", handleFileUpload);
-loadDefaultBtn.addEventListener("click", loadDefaultCSV);
+// loadDefaultBtn.addEventListener("click", loadDefaultCSV);
 searchInput.addEventListener("input", debounceSearchItems); // Real-time search
 printBtn.addEventListener("click", showPriceEditModal);
 closePriceModal.addEventListener("click", closePriceEditModalHandler);
