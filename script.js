@@ -532,16 +532,16 @@ function showPrintPreview() {
   });
 
   // Add empty boxes if less than 8 items
-  const emptyBoxesNeeded = 8 - selectedItems.length;
-  for (let i = 0; i < emptyBoxesNeeded; i++) {
-    printDocument.write(`
-            <div class="product-box">
-                <div class="product-id"></div>
-                <div class="product-name"></div>
-                <div class="product-price"></div>
-            </div>
-        `);
-  }
+//   const emptyBoxesNeeded = 8 - selectedItems.length;
+//   for (let i = 0; i < emptyBoxesNeeded; i++) {
+//     printDocument.write(`
+//             <div class="product-box">
+//                 <div class="product-id"></div>
+//                 <div class="product-name"></div>
+//                 <div class="product-price"></div>
+//             </div>
+//         `);
+//   }
 
   printDocument.write(`
         </body>
