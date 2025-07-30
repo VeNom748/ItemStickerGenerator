@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Item Print App</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Item Selection & Printing</h1>
+
+      <div class="file-input">
+        <label for="excel-file">Upload Items File:</label>
+        <input type="file" id="excel-file" accept=".xlsx, .xls, .csv" />
+        <button id="load-default-btn">Load Items List</button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search items..." />
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div class="item-selection">
+        <h2>Select Items (Max 10)</h2>
+        <div class="item-grid" id="item-grid">
+          <!-- Items will be populated here -->
+        </div>
+      </div>
+
+      <div class="selected-items">
+        <div class="selected-items-header">
+          <h2>Selected Items</h2>
+          <span class="item-count">0/10</span>
+        </div>
+        <div id="selected-items-container">
+          <!-- Selected items will be added here -->
+        </div>
+        <button id="print-btn" disabled>Print Selected Items</button>
+      </div>
+    </div>
+
+    <!-- Price Edit Modal -->
+    <div id="price-edit-modal" class="modal" style="display: none">
+      <div class="modal-content price-edit-content">
+        <div class="modal-header">
+          <h2>Edit Prices Before Printing</h2>
+          <span class="close" id="close-price-modal">&times;</span>
+        </div>
+        <div id="price-edit-container">
+          <!-- Price edit items will be populated here -->
+        </div>
+        <div class="modal-footer">
+          <button id="cancel-edit-btn">Cancel</button>
+          <button id="confirm-print-btn">Confirm & Print</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
