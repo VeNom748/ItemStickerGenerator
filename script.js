@@ -409,7 +409,7 @@ function showPrintPreview() {
                     width: 9.4cm;
                     height: 5.6cm;
                     border: 2px solid #000;
-                    padding: 2mm;
+                    padding: 2mm ;
                     box-sizing: border-box;
                     display: flex;
                     flex-direction: column;
@@ -446,7 +446,8 @@ function showPrintPreview() {
                     display: flex;
                     align-items: end;
                     justify-content: space-between;
-                        line-height: 7rem;
+                    paddint-top:0;
+                       
 
             }
             .product-price {
@@ -515,7 +516,8 @@ function showPrintPreview() {
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
                       item.MRP - item.SALE_PRICE || ""
                     }</span>
-                     <span style="font-size:1.8rem; margin-top:-1.2rem;position:absolute;top:0;right:-2.5rem;">OFF</span>
+                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
+                     <span style="font-size:1.8rem; margin-top:-1.2rem;position:absolute;bottom:1.5rem;right:-2rem;">OFF</span>
                   </div>
                  
                 </div>
@@ -532,16 +534,16 @@ function showPrintPreview() {
   });
 
   // Add empty boxes if less than 8 items
-//   const emptyBoxesNeeded = 8 - selectedItems.length;
-//   for (let i = 0; i < emptyBoxesNeeded; i++) {
-//     printDocument.write(`
-//             <div class="product-box">
-//                 <div class="product-id"></div>
-//                 <div class="product-name"></div>
-//                 <div class="product-price"></div>
-//             </div>
-//         `);
-//   }
+  //   const emptyBoxesNeeded = 8 - selectedItems.length;
+  //   for (let i = 0; i < emptyBoxesNeeded; i++) {
+  //     printDocument.write(`
+  //             <div class="product-box">
+  //                 <div class="product-id"></div>
+  //                 <div class="product-name"></div>
+  //                 <div class="product-price"></div>
+  //             </div>
+  //         `);
+  //   }
 
   printDocument.write(`
         </body>
