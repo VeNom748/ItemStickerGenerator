@@ -387,128 +387,21 @@ function confirmAndPrint() {
 
 // Show print preview with specific template
 function showPrintPreview() {
-  // Create a print stylesheet
-  const printStyles = `
-            @page {
-                    size: A4;
-                    margin: 0;
-            }
-            body {
-                    margin: 0;
-                    padding: 2mm;
-                    box-sizing: border-box;
-                    display: grid;
-                    grid-template-columns: 9.4cm 9.4cm;
-                    grid-template-rows: 5.6cm 5.6cm 5.6cm 5.6cm;
-                    gap: 2mm;
-                    justify-content: center;
-                    align-content: center;
-                    font-family: Arial, sans-serif;
-            }
-            .product-box {
-                    width: 9.4cm;
-                    height: 5.6cm;
-                    border: 2px solid #000;
-                    padding: 2mm ;
-                    box-sizing: border-box;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                    page-break-inside: avoid;
-            }
-            .product-id {
-                    font-size: 14pt;
-                    font-weight: bold;
-            }
-            .product-name {
-                    font-size: 13pt;
-                    font-weight: bold;
-                    text-align: center;
-                    flex-grow: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-            }
-            .product-name-sm{
-                    font-size: 10pt;
-                    font-weight: bold;
-                    text-align: center;
-                    flex-grow: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-            }
-            .product-discount{
-                    font-size: 8rem;
-                    font-weight: bold;
-                    text-align: center;
-                    flex-grow: 1;
-                    display: flex;
-                    align-items: end;
-                    justify-content: space-between;
-                    paddint-top:0;
-                       
+  // Load the print template
+  fetch("print-template.html")
+    .then((response) => response.text())
+    .then((templateHtml) => {
+      // Generate product boxes HTML
+      let productBoxesHtml = "";
 
-            }
-            .product-price {
-                    font-size: 12pt;
-                    text-align: center;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-            }
-            .mrp-price {
-                    text-decoration: line-through;
-                    color: #000;
-            }
-            .sale-price {
-                    font-weight: bold;
-                    color: #000;
-            }
-    `;
+      selectedItems.forEach((item) => {
+        // Check if SHORT_NAME is 30 or more characters
+        const nameClass =
+          item.SHORT_NAME && item.SHORT_NAME.length >= 30
+            ? "product-name-sm"
+            : "product-name";
 
-  // Create a hidden iframe for printing
-  const iframe = document.createElement("iframe");
-  iframe.style.position = "absolute";
-  iframe.style.left = "-9999px";
-  document.body.appendChild(iframe);
-
-  // Write the print content to the iframe
-  const printDocument = iframe.contentWindow.document;
-  printDocument.open();
-  printDocument.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Product Labels</title>
-            <style>${printStyles}</style>
-        </head>
-        <body>
-    `);
-
-  // Add selected items
-  //   selectedItems.forEach((item) => {
-  //     printDocument.write(`
-  //             <div class="product-box">
-  //                <div class="product-id">${item.ITEM_ID || ""}</div>
-  //                 <div class="product-name">${item.SHORT_NAME || ""}</div>
-  //                 <div class="product-price">
-  //                     <span class="mrp-price">MRP £${item.MRP || "0"}</span><br>
-  //                     <span class="sale-price">Mauli Mart Price £${
-  //                       item.SALE_PRICE || "0"
-  //                     }</span>
-  //                 </div>
-  //             </div>
-  //         `);
-  //   });
-  selectedItems.forEach((item) => {
-    // Check if SHORT_NAME is 30 or more characters
-    const nameClass =
-      item.SHORT_NAME && item.SHORT_NAME.length >= 30
-        ? "product-name-sm"
-        : "product-name";
-
-    printDocument.write(`
+        productBoxesHtml += `
             <div class="product-box">
                 <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                   <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
@@ -519,7 +412,6 @@ function showPrintPreview() {
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                      <span style="font-size:1.8rem; margin-top:-1.2rem;position:absolute;bottom:1.5rem;right:-2rem;">OFF</span>
                   </div>
-                 
                 </div>
                  <div class="${nameClass}">${item.SHORT_NAME || ""}</div>
                 <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
@@ -530,31 +422,39 @@ function showPrintPreview() {
                   }</span>
                 </div>
             </div>
-        `);
-  });
+        `;
+      });
 
-  // Add empty boxes if less than 8 items
-  //   const emptyBoxesNeeded = 8 - selectedItems.length;
-  //   for (let i = 0; i < emptyBoxesNeeded; i++) {
-  //     printDocument.write(`
-  //             <div class="product-box">
-  //                 <div class="product-id"></div>
-  //                 <div class="product-name"></div>
-  //                 <div class="product-price"></div>
-  //             </div>
-  //         `);
-  //   }
+      // Insert product boxes into template
+      const finalHtml = templateHtml.replace(
+        "<!-- Product boxes will be dynamically inserted here -->",
+        productBoxesHtml
+      );
 
-  printDocument.write(`
-        </body>
-        </html>
-    `);
-  printDocument.close();
+      // Create a hidden iframe for printing
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.left = "-9999px";
+      document.body.appendChild(iframe);
 
-  // Wait for content to load then print
-  setTimeout(() => {
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    document.body.removeChild(iframe);
-  }, 100);
+      // Write the print content to the iframe
+      const printDocument = iframe.contentWindow.document;
+      printDocument.open();
+      printDocument.write(finalHtml);
+      printDocument.close();
+
+      // Wait for content to load then print
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        document.body.removeChild(iframe);
+      }, 100);
+    })
+    .catch((error) => {
+      console.error("Error loading print template:", error);
+      alert(
+        "Error loading print template. Please check if print-template.html exists."
+      );
+    });
 }

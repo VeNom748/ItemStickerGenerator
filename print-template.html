@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Product Labels</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 2mm;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 9.4cm 9.4cm;
+        grid-template-rows: 5.6cm 5.6cm 5.6cm 5.6cm;
+        gap: 2mm;
+        justify-content: center;
+        align-content: center;
+        font-family: Arial, sans-serif;
+      }
+      .product-box {
+        width: 9.4cm;
+        height: 5.6cm;
+        border: 5px solid #000;
+        padding: 5px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        page-break-inside: avoid;
+      }
+      .product-id {
+        font-size: 14pt;
+        font-weight: bold;
+      }
+      .product-name {
+        font-size: 13pt;
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-name-sm {
+        font-size: 10pt;
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .product-discount {
+        font-size: 8rem;
+        font-weight: bold;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        padding-top: 0;
+      }
+      .product-price {
+        font-size: 12pt;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .mrp-price {
+        text-decoration: line-through;
+        color: #000;
+      }
+      .sale-price {
+        font-weight: bold;
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Product boxes will be dynamically inserted here -->
+  </body>
+</html>
