@@ -16,6 +16,7 @@ const selectedItemsContainer = document.getElementById(
 );
 const itemCountSpan = document.querySelector(".item-count");
 const printBtn = document.getElementById("print-btn");
+const resetBtn = document.getElementById("reset-btn");
 const priceEditModal = document.getElementById("price-edit-modal");
 const closePriceModal = document.getElementById("close-price-modal");
 const cancelEditBtn = document.getElementById("cancel-edit-btn");
@@ -31,6 +32,7 @@ excelFileInput.addEventListener("change", handleFileUpload);
 // loadDefaultBtn.addEventListener("click", loadDefaultCSV);
 searchInput.addEventListener("input", debounceSearchItems); // Real-time search
 printBtn.addEventListener("click", showPriceEditModal);
+resetBtn.addEventListener("click", resetSelectedItems);
 closePriceModal.addEventListener("click", closePriceEditModalHandler);
 cancelEditBtn.addEventListener("click", closePriceEditModalHandler);
 confirmPrintBtn.addEventListener("click", confirmAndPrint);
@@ -269,6 +271,28 @@ function updateSelectedItemsTable() {
   });
 }
 
+// Reset selected items
+function resetSelectedItems() {
+  if (selectedItems.length === 0) {
+    alert("No items selected to reset");
+    return;
+  }
+
+  const confirmReset = confirm(
+    `Are you sure you want to remove all ${selectedItems.length} selected items?`
+  );
+
+  if (confirmReset) {
+    selectedItems = [];
+    updateSelectedItemsTable();
+
+    // Disable print button
+    printBtn.disabled = true;
+
+    alert("All selected items have been cleared");
+  }
+}
+
 // Show price edit modal before printing
 function showPriceEditModal() {
   if (selectedItems.length === 0) {
@@ -414,7 +438,7 @@ function showPrintPreview() {
                   </div>
                 </div>
                  <div class="${nameClass}">${item.SHORT_NAME || ""}</div>
-                <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
+                <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:2px;margin-bottom:3px;">
                   <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
                   <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
                   <span class="sale-price">Mauli Mart Price ₹${
