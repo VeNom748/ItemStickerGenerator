@@ -288,15 +288,15 @@ function printWithInlineTemplate(items) {
     // Check if discount has decimal values to adjust font size
     const hasDecimal = discount % 1 !== 0;
     const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
-
-    productBoxesHtml += `
+    if (discount > 0) {
+      productBoxesHtml += `
         <div class="product-box">
             <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
               <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
                 <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
                 <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
-      discount || "0"
-    }</span>
+        discount || "0"
+      }</span>
                 <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                  <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
               </div>
@@ -311,6 +311,7 @@ function printWithInlineTemplate(items) {
             </div>
         </div>
     `;
+    }
   });
 
   const fullHtml = `
@@ -336,7 +337,7 @@ function printWithInlineTemplate(items) {
                 font-family: Arial, sans-serif;
             }
             .product-box {
-                width: 9.2cm;
+                width: 9.35cm;
                 height: 5.6cm;
                 border: 5px solid #000;
                 padding: 2mm;
@@ -436,29 +437,30 @@ function printRangeDirectly(itemsToPrint = selectedItems) {
         // Check if discount has decimal values to adjust font size
         const hasDecimal = discount % 1 !== 0;
         const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
-
-        productBoxesHtml += `
-            <div class="product-box">
-                <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                  <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
-                    <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                    <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
-          discount || "0"
-        }</span>
-                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
-                     <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
+        if (discount > 0) {
+          productBoxesHtml += `
+              <div class="product-box">
+                  <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
+                      <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
+                      <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
+            discount || "0"
+          }</span>
+                      <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
+                       <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
+                    </div>
                   </div>
-                </div>
-                 <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
-                <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
-                  <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
-                  <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
-                  <span class="sale-price">Mauli Mart Price ₹${
-                    item.SALE_PRICE || "0"
-                  }</span>
-                </div>
-            </div>
-        `;
+                   <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
+                  <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
+                    <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
+                    <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
+                    <span class="sale-price">Mauli Mart Price ₹${
+                      item.SALE_PRICE || "0"
+                    }</span>
+                  </div>
+              </div>
+          `;
+        }
       });
 
       console.log("Generated HTML length:", productBoxesHtml.length);
@@ -736,15 +738,15 @@ function showPrintPreview() {
         // Check if discount has decimal values to adjust font size
         const hasDecimal = discount % 1 !== 0;
         const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
-
-        productBoxesHtml += `
+        if (discount > 0) {
+          productBoxesHtml += `
             <div class="product-box">
                 <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                   <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
                     <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
                     <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
-          discount || "0"
-        }</span>
+            discount || "0"
+          }</span>
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                      <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
                   </div>
@@ -759,6 +761,7 @@ function showPrintPreview() {
                 </div>
             </div>
         `;
+        }
       });
 
       console.log("Generated HTML length:", productBoxesHtml.length);
