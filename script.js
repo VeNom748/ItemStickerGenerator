@@ -285,14 +285,18 @@ function printWithInlineTemplate(items) {
     const discount =
       parseFloat(item.MRP || 0) - parseFloat(item.SALE_PRICE || 0);
 
+    // Check if discount has decimal values to adjust font size
+    const hasDecimal = discount % 1 !== 0;
+    const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
+
     productBoxesHtml += `
         <div class="product-box">
             <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
               <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
                 <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
-                  discount || "0"
-                }</span>
+                <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
+      discount || "0"
+    }</span>
                 <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                  <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
               </div>
@@ -429,14 +433,18 @@ function printRangeDirectly(itemsToPrint = selectedItems) {
             ? parseFloat(item.MRP) - parseFloat(item.SALE_PRICE)
             : 0;
 
+        // Check if discount has decimal values to adjust font size
+        const hasDecimal = discount % 1 !== 0;
+        const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
+
         productBoxesHtml += `
             <div class="product-box">
                 <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                   <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
                     <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
-                      discount || "0"
-                    }</span>
+                    <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
+          discount || "0"
+        }</span>
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                      <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
                   </div>
@@ -725,14 +733,18 @@ function showPrintPreview() {
         const discount =
           parseFloat(item.MRP || 0) - parseFloat(item.SALE_PRICE || 0);
 
+        // Check if discount has decimal values to adjust font size
+        const hasDecimal = discount % 1 !== 0;
+        const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
+
         productBoxesHtml += `
             <div class="product-box">
                 <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                   <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
                     <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
-                      discount || "0"
-                    }</span>
+                    <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
+          discount || "0"
+        }</span>
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
                      <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
                   </div>
