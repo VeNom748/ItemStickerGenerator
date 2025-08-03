@@ -21,6 +21,26 @@
         <button id="search-btn">Search</button>
       </div>
 
+      <div class="range-print-box">
+        <h3>Print Range of Items</h3>
+        <div class="range-inputs">
+          <div class="range-input-group">
+            <label for="from-id">From Index:</label>
+            <input
+              type="number"
+              id="from-id"
+              placeholder="Start Index"
+              min="1"
+            />
+          </div>
+          <div class="range-input-group">
+            <label for="to-id">To Index:</label>
+            <input type="number" id="to-id" placeholder="End Index" min="1" />
+          </div>
+          <button id="print-range-btn">Print Range</button>
+        </div>
+      </div>
+
       <div class="item-selection">
         <h2>Select Items (Max 10)</h2>
         <div class="item-grid" id="item-grid">

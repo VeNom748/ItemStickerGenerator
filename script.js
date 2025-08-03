@@ -10,6 +10,9 @@ const excelFileInput = document.getElementById("excel-file");
 const loadDefaultBtn = document.getElementById("load-default-btn");
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
+const fromIdInput = document.getElementById("from-id");
+const toIdInput = document.getElementById("to-id");
+const printRangeBtn = document.getElementById("print-range-btn");
 const itemGrid = document.getElementById("item-grid");
 const selectedItemsContainer = document.getElementById(
   "selected-items-container"
@@ -31,6 +34,7 @@ const printContent = document.getElementById("print-content");
 excelFileInput.addEventListener("change", handleFileUpload);
 // loadDefaultBtn.addEventListener("click", loadDefaultCSV);
 searchInput.addEventListener("input", debounceSearchItems); // Real-time search
+printRangeBtn.addEventListener("click", printRangeOfItems);
 printBtn.addEventListener("click", showPriceEditModal);
 resetBtn.addEventListener("click", resetSelectedItems);
 closePriceModal.addEventListener("click", closePriceEditModalHandler);
@@ -165,10 +169,15 @@ function loadDefaultCSV() {
 function displayItems(items) {
   itemGrid.innerHTML = "";
 
-  items.forEach((item) => {
+  items.forEach((item, index) => {
     const itemCard = document.createElement("div");
     itemCard.className = "item-card";
+
+    // Calculate the actual index in the full dataset
+    const actualIndex = itemsData.indexOf(item) + 1;
+
     itemCard.innerHTML = `
+            <div class="item-index">#${actualIndex}</div>
             <strong>${item.SHORT_NAME || "N/A"}</strong><br>
             <small>ID: ${item.ITEM_ID || "N/A"}</small><br>
             <small>MRP: ₹${item.MRP || "0"}</small>
@@ -202,6 +211,283 @@ function searchItems() {
   });
 
   displayItems(filteredItems);
+}
+
+// Print range of items by product index
+function printRangeOfItems() {
+  const fromIndex = parseInt(fromIdInput.value.trim());
+  const toIndex = parseInt(toIdInput.value.trim());
+
+  if (!fromIndex || !toIndex || isNaN(fromIndex) || isNaN(toIndex)) {
+    alert("Please enter valid index numbers for both From Index and To Index");
+    return;
+  }
+
+  if (fromIndex < 1 || toIndex < 1) {
+    alert("Index numbers must be 1 or greater");
+    return;
+  }
+
+  if (fromIndex > toIndex) {
+    alert("From Index must be less than or equal to To Index");
+    return;
+  }
+
+  if (itemsData.length === 0) {
+    alert("No items data loaded. Please load a CSV/Excel file first.");
+    return;
+  }
+
+  // Check if index numbers are within the available data range
+  const maxIndex = itemsData.length;
+  if (fromIndex > maxIndex || toIndex > maxIndex) {
+    alert(
+      `Index numbers must be between 1 and ${maxIndex} (total available items)`
+    );
+    return;
+  }
+
+  // Get items in the specified index range (convert to 0-based index)
+  const rangeItems = itemsData.slice(fromIndex - 1, toIndex);
+
+  if (rangeItems.length === 0) {
+    alert(`No items found in the range from index ${fromIndex} to ${toIndex}`);
+    return;
+  }
+
+  if (rangeItems.length > 50) {
+    const confirmPrint = confirm(
+      `This will print ${rangeItems.length} items (index ${fromIndex} to ${toIndex}). This might take a while. Continue?`
+    );
+    if (!confirmPrint) return;
+  }
+
+  // Print the range items directly
+  printRangeDirectly(rangeItems);
+
+  alert(
+    `Range print completed for ${rangeItems.length} items (index ${fromIndex} to ${toIndex})`
+  );
+}
+
+// Fallback print function without external template
+function printWithInlineTemplate(items) {
+  console.log("Using inline template for printing");
+
+  let productBoxesHtml = "";
+
+  items.forEach((item, itemIndex) => {
+    const nameClass =
+      item.SHORT_NAME && item.SHORT_NAME.length >= 30
+        ? "product-name-sm"
+        : "product-name";
+
+    const discount =
+      parseFloat(item.MRP || 0) - parseFloat(item.SALE_PRICE || 0);
+
+    productBoxesHtml += `
+        <div class="product-box">
+            <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
+                <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
+                <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
+                  discount || "0"
+                }</span>
+                <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
+                 <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
+              </div>
+            </div>
+             <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
+            <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
+              <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
+              <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
+              <span class="sale-price">Mauli Mart Price ₹${
+                item.SALE_PRICE || "0"
+              }</span>
+            </div>
+        </div>
+    `;
+  });
+
+  const fullHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Product Labels</title>
+        <style>
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                margin: 0;
+                padding: 2mm;
+                box-sizing: border-box;
+                display: grid;
+                grid-template-columns: 9.4cm 9.4cm;
+                grid-template-rows: 5.6cm 5.6cm 5.6cm 5.6cm;
+                gap: 2mm;
+                justify-content: center;
+                align-content: center;
+                font-family: Arial, sans-serif;
+            }
+            .product-box {
+                width: 9.2cm;
+                height: 5.6cm;
+                border: 5px solid #000;
+                padding: 2mm;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                page-break-inside: avoid;
+            }
+            .product-name {
+                font-size: 13pt;
+                font-weight: bold;
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .product-name-sm {
+                font-size: 10pt;
+                font-weight: bold;
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mrp-price {
+                text-decoration: line-through;
+                color: #000;
+            }
+            .sale-price {
+                font-weight: bold;
+                color: #000;
+            }
+        </style>
+    </head>
+    <body>
+        ${productBoxesHtml}
+    </body>
+    </html>
+  `;
+
+  // Create a hidden iframe for printing
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "absolute";
+  iframe.style.left = "-9999px";
+  document.body.appendChild(iframe);
+
+  // Write the print content to the iframe
+  const printDocument = iframe.contentWindow.document;
+  printDocument.open();
+  printDocument.write(fullHtml);
+  printDocument.close();
+
+  // Wait for content to load then print
+  setTimeout(() => {
+    console.log("Triggering print dialog with inline template");
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+  }, 500);
+}
+
+// Print range directly without price editing modal
+function printRangeDirectly(itemsToPrint = selectedItems) {
+  console.log("Starting printRangeDirectly with", itemsToPrint.length, "items");
+
+  // Load the print template
+  fetch("print-template.html")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((templateHtml) => {
+      console.log("Template loaded successfully");
+
+      // Generate product boxes HTML for all range items
+      let productBoxesHtml = "";
+
+      itemsToPrint.forEach((item, itemIndex) => {
+        console.log(`Processing item ${itemIndex + 1}:`, item);
+
+        // Check if SHORT_NAME is 30 or more characters
+        const nameClass =
+          item.SHORT_NAME && item.SHORT_NAME.length >= 30
+            ? "product-name-sm"
+            : "product-name";
+
+        const discount =
+          item.MRP && item.SALE_PRICE
+            ? parseFloat(item.MRP) - parseFloat(item.SALE_PRICE)
+            : 0;
+
+        productBoxesHtml += `
+            <div class="product-box">
+                <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
+                    <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
+                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
+                      discount || "0"
+                    }</span>
+                    <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
+                     <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
+                  </div>
+                </div>
+                 <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
+                <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
+                  <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
+                  <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
+                  <span class="sale-price">Mauli Mart Price ₹${
+                    item.SALE_PRICE || "0"
+                  }</span>
+                </div>
+            </div>
+        `;
+      });
+
+      console.log("Generated HTML length:", productBoxesHtml.length);
+
+      // Insert product boxes into template
+      const finalHtml = templateHtml.replace(
+        "<!-- Product boxes will be dynamically inserted here -->",
+        productBoxesHtml
+      );
+
+      console.log("Final HTML prepared, creating iframe");
+
+      // Create a hidden iframe for printing
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "absolute";
+      iframe.style.left = "-9999px";
+      document.body.appendChild(iframe);
+
+      // Write the print content to the iframe
+      const printDocument = iframe.contentWindow.document;
+      printDocument.open();
+      printDocument.write(finalHtml);
+      printDocument.close();
+
+      // Wait for content to load then print
+      setTimeout(() => {
+        console.log("Triggering print dialog");
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        document.body.removeChild(iframe);
+      }, 500); // Increased timeout to 500ms
+    })
+    .catch((error) => {
+      console.error("Error in printRangeDirectly:", error);
+      console.log("Falling back to inline template");
+      printWithInlineTemplate(itemsToPrint);
+    });
 }
 
 // Select an item
@@ -411,33 +697,47 @@ function confirmAndPrint() {
 
 // Show print preview with specific template
 function showPrintPreview() {
+  console.log("Starting showPrintPreview with", selectedItems.length, "items");
+
   // Load the print template
   fetch("print-template.html")
-    .then((response) => response.text())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.text();
+    })
     .then((templateHtml) => {
+      console.log("Template loaded successfully");
+
       // Generate product boxes HTML
       let productBoxesHtml = "";
 
-      selectedItems.forEach((item) => {
+      selectedItems.forEach((item, itemIndex) => {
+        console.log(`Processing item ${itemIndex + 1}:`, item.SHORT_NAME);
+
         // Check if SHORT_NAME is 30 or more characters
         const nameClass =
           item.SHORT_NAME && item.SHORT_NAME.length >= 30
             ? "product-name-sm"
             : "product-name";
 
+        const discount =
+          parseFloat(item.MRP || 0) - parseFloat(item.SALE_PRICE || 0);
+
         productBoxesHtml += `
             <div class="product-box">
                 <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                   <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
-                    <span style="font-size:2rem; margin-bottom:1.5rem;">₹</span>
+                    <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;">${
-                      item.MRP - item.SALE_PRICE || ""
+                      discount || "0"
                     }</span>
                     <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
-                     <span style="font-size:1.8rem; margin-top:-1.2rem;position:absolute;bottom:1.5rem;right:-2rem;">OFF</span>
+                     <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
                   </div>
                 </div>
-                 <div class="${nameClass}">${item.SHORT_NAME || ""}</div>
+                 <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
                 <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:2px;margin-bottom:3px;">
                   <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
                   <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
@@ -449,11 +749,15 @@ function showPrintPreview() {
         `;
       });
 
+      console.log("Generated HTML length:", productBoxesHtml.length);
+
       // Insert product boxes into template
       const finalHtml = templateHtml.replace(
         "<!-- Product boxes will be dynamically inserted here -->",
         productBoxesHtml
       );
+
+      console.log("Final HTML prepared, creating iframe");
 
       // Create a hidden iframe for printing
       const iframe = document.createElement("iframe");
@@ -469,16 +773,15 @@ function showPrintPreview() {
 
       // Wait for content to load then print
       setTimeout(() => {
+        console.log("Triggering print dialog");
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
-
         document.body.removeChild(iframe);
-      }, 100);
+      }, 500); // Increased timeout to 500ms
     })
     .catch((error) => {
-      console.error("Error loading print template:", error);
-      alert(
-        "Error loading print template. Please check if print-template.html exists."
-      );
+      console.error("Error in showPrintPreview:", error);
+      console.log("Falling back to inline template");
+      printWithInlineTemplate(selectedItems);
     });
 }
