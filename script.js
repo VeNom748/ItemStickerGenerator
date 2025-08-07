@@ -290,26 +290,29 @@ function printWithInlineTemplate(items) {
     const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
     if (discount > 0) {
       productBoxesHtml += `
-        <div class="product-box">
-            <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-              <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
-                <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
+         <div class="product-box">
+                  <div class="product-discount" style="text-align: center; margin: 0; padding: 0;">
+                    <div style="display: flex; align-items: flex-end; justify-content: center; position: relative; margin: 0;">
+                      <span style="font-size: 2.5rem; margin-right: 2px; line-height: 1;">₹</span>
+                      <span style="font-size: ${discountFontSize}; font-weight: bold; line-height: 0.8; margin: 0;">${
         discount || "0"
       }</span>
-                <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
-                 <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
+                      <span style="font-size: 1.5rem;">OFF</span>
+                    </div>
+                  </div>
+                   <div class="${nameClass}" style="text-align: center; margin: 3mm 0 2mm 0; word-wrap: break-word;">${
+        item.SHORT_NAME || "N/A"
+      }</div>
+                  <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:auto;font-size:11pt;">
+                    <span class="mrp-price" style="text-decoration: line-through;">MRP ₹${
+                      item.MRP || "0"
+                    }</span>
+                    <span style="border-left:2px solid #000;height:1.2em;margin:0 8px;"></span>
+                    <span class="sale-price">Mauli Mart Price ₹${
+                      item.SALE_PRICE || "0"
+                    }</span>
+                  </div>
               </div>
-            </div>
-             <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
-            <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
-              <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
-              <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
-              <span class="sale-price">Mauli Mart Price ₹${
-                item.SALE_PRICE || "0"
-              }</span>
-            </div>
-        </div>
     `;
     }
   });
@@ -406,98 +409,226 @@ function printWithInlineTemplate(items) {
 function printRangeDirectly(itemsToPrint = selectedItems) {
   console.log("Starting printRangeDirectly with", itemsToPrint.length, "items");
 
-  // Load the print template
-  fetch("print-template.html")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.text();
-    })
-    .then((templateHtml) => {
-      console.log("Template loaded successfully");
+  // Generate CSS and HTML content directly
+  let productBoxesHtml = "";
 
-      // Generate product boxes HTML for all range items
-      let productBoxesHtml = "";
+  itemsToPrint.forEach((item, itemIndex) => {
+    console.log(`Processing item ${itemIndex + 1}:`, item);
 
-      itemsToPrint.forEach((item, itemIndex) => {
-        console.log(`Processing item ${itemIndex + 1}:`, item);
+    // Check if SHORT_NAME is 30 or more characters
+    const nameClass =
+      item.SHORT_NAME && item.SHORT_NAME.length >= 30
+        ? "product-name-sm"
+        : "product-name";
 
-        // Check if SHORT_NAME is 30 or more characters
-        const nameClass =
-          item.SHORT_NAME && item.SHORT_NAME.length >= 30
-            ? "product-name-sm"
-            : "product-name";
+    const discount =
+      item.MRP && item.SALE_PRICE
+        ? parseFloat(item.MRP) - parseFloat(item.SALE_PRICE)
+        : 0;
 
-        const discount =
-          item.MRP && item.SALE_PRICE
-            ? parseFloat(item.MRP) - parseFloat(item.SALE_PRICE)
-            : 0;
+    // Check if discount has decimal values to adjust font size class
+    const hasDecimal = discount % 1 !== 0;
+    const discountSizeClass =
+      discount > 999
+        ? "discount-amount-sm"
+        : discount > 99
+        ? "discount-amount-medium"
+        : hasDecimal
+        ? "discount-amount-small"
+        : "discount-amount-large";
+    //  <div class="logo-container">
+    //           <img src="mauliMart1.png" alt="Mauli Mart Logo" class="product-logo">
+    //         </div>
+    if (discount > 0) {
+      productBoxesHtml += `
+        <div class="product-box">
+       
+          <div class="product-discount">
+            <div class="discount-container">
+              <span class="discount-currency">₹</span>
+              <span class="discount-amount ${discountSizeClass}">${
+        discount || "0"
+      }</span>
+              <span class="discount-text">OFF</span>
+            </div>
+          </div>
+          <div class="${nameClass} product-name-container">${
+        item.SHORT_NAME || "N/A"
+      }</div>
+          <div class="price-container">
+            <span class="mrp-price mrp-strikethrough">MRP ₹${
+              item.MRP || "0"
+            }</span>
+            <span class="price-separator"></span>
+            <span class="sale-price">Mauli Mart Price ₹${
+              item.SALE_PRICE || "0"
+            }</span>
+          </div>
+        </div>
+      `;
+    }
+  });
 
-        // Check if discount has decimal values to adjust font size
-        const hasDecimal = discount % 1 !== 0;
-        const discountFontSize = hasDecimal ? "6.5rem" : "8rem";
-        if (discount > 0) {
-          productBoxesHtml += `
-              <div class="product-box">
-                  <div class="product-discount" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="display: flex; align-items: flex-end; justify-content: center;position:relative;">
-                      <span style="font-size:3rem; margin-bottom:1.5rem;">₹</span>
-                      <span style="font-size:${discountFontSize}; font-weight:bold; margin:0 10px;">${
-            discount || "0"
-          }</span>
-                      <span style="font-size:8rem; font-weight:bold; margin:0 10px;"></span>
-                       <span style="font-size:1.8rem; margin-top:-1rem;position:absolute;bottom:1.5rem;right:-1.5rem;">OFF</span>
-                    </div>
-                  </div>
-                   <div class="${nameClass}">${item.SHORT_NAME || "N/A"}</div>
-                  <div style="width:100%;display:flex;align-items:center;justify-content:center;margin-top:5px;">
-                    <span class="mrp-price">MRP ₹${item.MRP || "0"}</span>
-                    <span style="border-left:2px solid #000;height:1.5em;margin:0 10px;"></span>
-                    <span class="sale-price">Mauli Mart Price ₹${
-                      item.SALE_PRICE || "0"
-                    }</span>
-                  </div>
-              </div>
-          `;
-        }
-      });
+  const fullHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Product Labels</title>
+        <style>
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                margin: 0;
+                padding: 2mm;
+                box-sizing: border-box;
+                display: grid;
+                grid-template-columns: 9.4cm 9.4cm;
+                grid-template-rows: 5.6cm 5.6cm 5.6cm 5.6cm;
+                gap: 2mm;
+                justify-content: center;
+                align-content: center;
+                font-family: Arial, sans-serif;
+            }
+            .product-box {
+                width: 9.35cm;
+                height: 5.6cm;
+                border: 5px solid #000;
+                padding: 2mm;
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                page-break-inside: avoid;
+                position: relative;
+            }
+            .product-name {
+                font-size: 13pt;
+                font-weight: bold;
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .product-name-sm {
+                font-size: 10pt;
+                font-weight: bold;
+                text-align: center;
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .mrp-price {
+                text-decoration: line-through;
+                color: #000;
+            }
+            .sale-price {
+                font-weight: bold;
+                color: #000;
+                font-size:1.1rem
+            }
+            .product-discount {
+                text-align: center;
+                margin: 0;
+                padding: 0;
+            }
+            .discount-container {
+                display: flex;
+                align-items: flex-end;
+                justify-content: center;
+                position: relative;
+                margin: 0;
+            }
+            .discount-currency {
+                font-size: 2.5rem;
+                margin-right: 2px;
+                line-height: 1;
+            }
+            .discount-amount {
+                font-weight: bold;
+                line-height: 0.8;
+                margin: 0;
+            }
+            .discount-amount-large {
+                font-size: 11rem;
+            }
+            .discount-amount-small {
+                font-size: 8rem;
+            }
+            .discount-amount-sm {
+                font-size: 7rem;
+            }
+            .discount-amount-medium {
+                font-size: 10rem;
+            }
+            .discount-text {
+                font-size: 1.5rem;
+            }
+            .product-name-container {
+                text-align: center;
+                margin: 1mm 0 0mm 0;
+                word-wrap: break-word;
+            }
+            .price-container {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: auto;
+                font-size: 11pt;
+            }
+            .price-separator {
+                border-left: 2px solid #000;
+                height: 1.2em;
+                margin: 0 8px;
+            }
+            .mrp-strikethrough {
+                text-decoration: line-through;
+            }
+            .logo-container {
+                position: absolute;
+                top: 0mm;
+                right: 1mm;
+                z-index: 10;
+            }
+            .product-logo {
+                width: 16mm;
+                height: 16mm;
+                object-fit: contain;
+                border-radius: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        ${productBoxesHtml}
+    </body>
+    </html>
+  `;
 
-      console.log("Generated HTML length:", productBoxesHtml.length);
+  console.log("Generated HTML with class-based structure");
 
-      // Insert product boxes into template
-      const finalHtml = templateHtml.replace(
-        "<!-- Product boxes will be dynamically inserted here -->",
-        productBoxesHtml
-      );
+  // Create a hidden iframe for printing
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "absolute";
+  iframe.style.left = "-9999px";
+  document.body.appendChild(iframe);
 
-      console.log("Final HTML prepared, creating iframe");
+  // Write the print content to the iframe
+  const printDocument = iframe.contentWindow.document;
+  printDocument.open();
+  printDocument.write(fullHtml);
+  printDocument.close();
 
-      // Create a hidden iframe for printing
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "absolute";
-      iframe.style.left = "-9999px";
-      document.body.appendChild(iframe);
-
-      // Write the print content to the iframe
-      const printDocument = iframe.contentWindow.document;
-      printDocument.open();
-      printDocument.write(finalHtml);
-      printDocument.close();
-
-      // Wait for content to load then print
-      setTimeout(() => {
-        console.log("Triggering print dialog");
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-        document.body.removeChild(iframe);
-      }, 500); // Increased timeout to 500ms
-    })
-    .catch((error) => {
-      console.error("Error in printRangeDirectly:", error);
-      console.log("Falling back to inline template");
-      printWithInlineTemplate(itemsToPrint);
-    });
+  // Wait for content to load then print
+  setTimeout(() => {
+    console.log("Triggering print dialog with class-based template");
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    document.body.removeChild(iframe);
+  }, 500);
 }
 
 // Select an item

@@ -9,30 +9,39 @@
       }
       body {
         margin: 0;
-        padding: 5mm;
+        padding: 1mm;
         box-sizing: border-box;
         display: grid;
         grid-template-columns: 9.4cm 9.4cm;
         grid-template-rows: 5.6cm 5.6cm 5.6cm 5.6cm;
-        gap: 5mm;
+        gap: 2mm;
         justify-content: center;
         align-content: center;
         font-family: Arial, sans-serif;
       }
       .product-box {
-        width: 9.4cm;
+        width: 9.35cm;
         height: 5.6cm;
-        border: 2px solid #000;
-        padding: 3mm;
+        border: 5px solid #000;
+        padding: 2mm;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         page-break-inside: avoid;
+        position: relative;
       }
-      .product-id {
-        font-size: 14pt;
-        font-weight: bold;
+      .logo-container {
+        position: absolute;
+        top: 2mm;
+        right: 2mm;
+        z-index: 10;
+      }
+      .product-logo {
+        width: 15mm;
+        height: 15mm;
+        object-fit: contain;
+        border-radius: 2px;
       }
       .product-name {
         font-size: 13pt;
@@ -43,18 +52,11 @@
         align-items: center;
         justify-content: center;
       }
-      .product-discount {
-        font-size: 8rem;
+      .product-name-sm {
+        font-size: 10pt;
         font-weight: bold;
         text-align: center;
         flex-grow: 1;
-        display: flex;
-        align-items: end;
-        justify-content: center;
-      }
-      .product-price {
-        font-size: 12pt;
-        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -67,238 +69,138 @@
         font-weight: bold;
         color: #000;
       }
+      .product-discount {
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+      .discount-container {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        position: relative;
+        margin: 0;
+      }
+      .discount-currency {
+        font-size: 2.5rem;
+        margin-right: 2px;
+        line-height: 1;
+      }
+      .discount-amount {
+        font-weight: bold;
+        line-height: 0.8;
+        margin: 0;
+      }
+      .discount-amount-large {
+        font-size: 11rem;
+      }
+      .discount-amount-medium {
+        font-size: 10rem;
+      }
+      .discount-text {
+        font-size: 1.5rem;
+      }
+      .product-name-container {
+        text-align: center;
+        margin: 3mm 0 2mm 0;
+        word-wrap: break-word;
+      }
+      .price-container {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: auto;
+        font-size: 11pt;
+      }
+      .price-separator {
+        border-left: 2px solid #000;
+        height: 1.2em;
+        margin: 0 8px;
+      }
+      .mrp-strikethrough {
+        text-decoration: line-through;
+      }
     </style>
   </head>
   <body>
-    <!-- Product Box 1 -->
+    <!-- Sample Product Box 1 -->
     <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >19
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
+      <div class="logo-container">
+        <img src="mauliMart.jpg" alt="Mauli Mart Logo" class="product-logo" />
       </div>
-      <div class="product-name">Elaichi 10 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹60</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
+      <div class="product-discount">
+        <div class="discount-container">
+          <span class="discount-currency">₹</span>
+          <span class="discount-amount discount-amount-large">19</span>
+          <span class="discount-text">OFF</span>
+        </div>
+      </div>
+      <div class="product-name product-name-container">Elaichi 10 gm</div>
+      <div class="price-container">
+        <span class="mrp-price mrp-strikethrough">MRP ₹60</span>
+        <span class="price-separator"></span>
         <span class="sale-price">Mauli Mart Price ₹41</span>
       </div>
     </div>
 
-    <!-- Product Box 2 -->
+    <!-- Sample Product Box 2 -->
     <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >10
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
+      <div class="logo-container">
+        <img src="mauliMart.jpg" alt="Mauli Mart Logo" class="product-logo" />
       </div>
-      <div class="product-name">Elaichi 5 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹30</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
+      <div class="product-discount">
+        <div class="discount-container">
+          <span class="discount-currency">₹</span>
+          <span class="discount-amount discount-amount-large">10</span>
+          <span class="discount-text">OFF</span>
+        </div>
+      </div>
+      <div class="product-name product-name-container">Elaichi 5 gm</div>
+      <div class="price-container">
+        <span class="mrp-price mrp-strikethrough">MRP ₹30</span>
+        <span class="price-separator"></span>
         <span class="sale-price">Mauli Mart Price ₹20</span>
       </div>
     </div>
 
-    <!-- Product Box 3 -->
+    <!-- Sample Product Box 3 -->
     <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >195
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
+      <div class="logo-container">
+        <img src="mauliMart.jpg" alt="Mauli Mart Logo" class="product-logo" />
       </div>
-      <div class="product-name">Elaichi 100 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹600</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
+      <div class="product-discount">
+        <div class="discount-container">
+          <span class="discount-currency">₹</span>
+          <span class="discount-amount discount-amount-medium">111</span>
+          <span class="discount-text">OFF</span>
+        </div>
+      </div>
+      <div class="product-name product-name-container">Elaichi 100 gm </div>
+      <div class="price-container">
+        <span class="mrp-price mrp-strikethrough">MRP ₹600</span>
+        <span class="price-separator"></span>
         <span class="sale-price">Mauli Mart Price ₹405</span>
       </div>
     </div>
 
-    <!-- Product Box 4 -->
+    <!-- Sample Product Box 4 -->
     <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >39
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
+      <div class="logo-container">
+        <img src="mauliMart.jpg" alt="Mauli Mart Logo" class="product-logo" />
       </div>
-      <div class="product-name">Elaichi 20 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹120</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
+      <div class="product-discount">
+        <div class="discount-container">
+          <span class="discount-currency">₹</span>
+          <span class="discount-amount discount-amount-large">39</span>
+          <span class="discount-text">OFF</span>
+        </div>
+      </div>
+      <div class="product-name product-name-container">Elaichi 20 gm</div>
+      <div class="price-container">
+        <span class="mrp-price mrp-strikethrough">MRP ₹120</span>
+        <span class="price-separator"></span>
         <span class="sale-price">Mauli Mart Price ₹81</span>
-      </div>
-    </div>
-
-    <!-- Product Box 5 -->
-    <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >24
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
-      </div>
-      <div class="product-name">Khaskhas 20 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹74</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
-        <span class="sale-price">Mauli Mart Price ₹50</span>
-      </div>
-    </div>
-
-    <!-- Product Box 6 -->
-    <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >12
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
-      </div>
-      <div class="product-name">Khaskhas 10 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹37</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
-        <span class="sale-price">Mauli Mart Price ₹25</span>
-      </div>
-    </div>
-
-    <!-- Product Box 7 -->
-    <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >95
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
-      </div>
-      <div class="product-name">Dry Dates 500 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹250</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
-        <span class="sale-price">Mauli Mart Price ₹155</span>
-      </div>
-    </div>
-
-    <!-- Product Box 8 -->
-    <div class="product-box">
-      <div class="product-discount">
-        <span
-          style="font-size: 2rem; vertical-align: end; margin-bottom: 1.3rem"
-          >₹</span
-        >47
-        <span
-          style="font-size: 1.8rem; vertical-align: end; margin-bottom: 1.3rem"
-          >OFF</span
-        >
-      </div>
-      <div class="product-name">Dry Dates 250 gm</div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <span class="mrp-price">MRP ₹125</span>
-        <span
-          style="border-left: 2px solid #000; height: 1.5em; margin: 0 10px"
-        ></span>
-        <span class="sale-price">Mauli Mart Price ₹78</span>
       </div>
     </div>
   </body>
